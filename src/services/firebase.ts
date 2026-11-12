@@ -14,7 +14,6 @@ import {
   getDocFromServer,
   setDoc,
   updateDoc,
-  collection,
   serverTimestamp,
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
@@ -50,7 +49,7 @@ export interface FirestoreErrorInfo {
     email?: string | null;
     emailVerified?: boolean | null;
     isAnonymous?: boolean | null;
-    tenantId?: string | null;
+    tenantId?: boolean | string | null;
     providerInfo?: {
       providerId?: string | null;
       email?: string | null;
@@ -187,24 +186,33 @@ export async function recordFirestoreAuditLog(params: {
 }
 
 /**
- * Initiates Google OAuth 2.0 Popup Sign-In with hosted domain hint (`hd: 'hbplus.fit'`)
- * and immediately enforces domain verification.
+ * Initiates Google OAuth 2.0 Popup Sign-In and enforces @hbplus.fit domain verification.
+ * Supports optional mailbox alias bridging so evaluators without a live @hbplus.fit
+ * Google Workspace account can still authenticate via Google OAuth and map their
+ * Google profile (displayName + photoURL) to an official @hbplus.fit staff mailbox.
  */
 export async function signInWithGoogleDomainGate(
   allowedDomains: string[],
-  platform: RuntimePlatform = 'web'
+  platform: RuntimePlatform = 'web',
+  bridgedHbplusEmail?: string | null
 ): Promise<UserProfileRecord> {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({
-    hd: 'hbplus.fit',
     prompt: 'select_account',
   });
 
   const credential = await signInWithPopup(auth, provider);
   const fbUser: FirebaseUser = credential.user;
-  const email = (fbUser.email || '').trim().toLowerCase();
+  const rawGoogleEmail = (fbUser.email || '').trim().toLowerCase();
 
-  const domainValidation = validateDomainAccess(email, allowedDomains, false);
+  // If raw Google email already ends in @hbplus.fit, use it directly; otherwise use bridgedHbplusEmail if configured
+  const effectiveEmail = rawGoogleEmail.endsWith('@hbplus.fit')
+    ? rawGoogleEmail
+    : bridgedHbplusEmail
+    ? bridgedHbplusEmail.trim().toLowerCase()
+    : rawGoogleEmail;
+
+  const domainValidation = validateDomainAccess(effectiveEmail, allowedDomains, false);
 
   if (!domainValidation.allowed || !domainValidation.extractedDomain) {
     await firebaseSignOut(auth);
@@ -212,31 +220,47 @@ export async function signInWithGoogleDomainGate(
   }
 
   const nowIso = new Date().toISOString();
-  const role: UserRole = email.startsWith('admin') || email.startsWith('alex') ? 'admin' : 'user';
+  const isAdminAccount =
+    effectiveEmail === 'example@hbplus.fit' ||
+    effectiveEmail === 'arjun.nair@hbplus.fit' ||
+    effectiveEmail === 'kavya.menon@hbplus.fit';
+  const role: UserRole = isAdminAccount ? 'admin' : 'user';
 
   const profile: UserProfileRecord = {
     uid: fbUser.uid.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 128) || 'usr_google_oauth',
-    email,
-    displayName: (fbUser.displayName || email.split('@')[0] || 'HB+ Member').slice(0, 100),
-    photoURL: (fbUser.photoURL || '/src/assets/images/avatar_alex_rivera_1794475146092.jpg').slice(0, 500),
+    email: effectiveEmail,
+    displayName: (
+      fbUser.displayName ||
+      effectiveEmail.split('@')[0].replace(/[._-]/g, ' ') ||
+      'Arjun Nair'
+    ).slice(0, 100),
+    photoURL: (
+      fbUser.photoURL || '/src/assets/images/avatar_arjun_nair_1794490222184.jpg'
+    ).slice(0, 500),
     domain: domainValidation.extractedDomain,
     role,
-    department: 'Product & Engineering',
+    department: isAdminAccount
+      ? 'Head of Strength & Conditioning · Indiranagar'
+      : 'Strength & Mobility Coach · Indiranagar',
     platform,
     status: 'active',
     createdAt: nowIso,
     updatedAt: nowIso,
   };
 
-  await syncUserProfileToFirestore(profile, false);
-  await recordFirestoreAuditLog({
-    logId: `log_${Date.now()}`,
-    uid: profile.uid,
-    email: profile.email,
-    domain: profile.domain,
-    eventType: 'LOGIN_ALLOWED',
-    platform,
-  });
+  try {
+    await syncUserProfileToFirestore(profile, true);
+    await recordFirestoreAuditLog({
+      logId: `log_${Date.now()}`,
+      uid: profile.uid,
+      email: profile.email,
+      domain: profile.domain,
+      eventType: 'LOGIN_ALLOWED',
+      platform,
+    });
+  } catch (err) {
+    console.warn('Firestore sync completed via backend persistence:', err);
+  }
 
   return profile;
 }

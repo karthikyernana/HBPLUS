@@ -46,6 +46,21 @@ export interface AuditLogRecord {
   createdAt: string;
 }
 
+export type TrainingTrack = 'Strength & Power' | 'Metabolic Conditioning' | 'Mobility & Recovery';
+export type SessionStatus = 'scheduled' | 'in_progress' | 'completed';
+
+export interface TrainingSession {
+  id: string;
+  title: string;
+  athleteName: string;
+  track: TrainingTrack;
+  timeSlot: string;
+  durationMin: number;
+  readinessScore: number;
+  targetBpm: number;
+  status: SessionStatus;
+}
+
 export interface DomainValidationResult {
   allowed: boolean;
   normalizedEmail: string;

@@ -5,6 +5,7 @@
     --font-display: 'Host Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-sans: 'Host Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   html,
@@ -14,15 +15,17 @@
   select,
   textarea {
     font-family: var(--font-sans);
-    color: #09090B;
-    background-color: #FAFAFA;
+    color: #181816;
+    background-color: #F7F6F2;
     letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, .font-display {
@@ -37,5 +40,100 @@
   .font-mono, code, pre {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
+  }
+
+  button,
+  [role="button"],
+  [role="tab"],
+  a {
+    transition:
+      background-color 180ms var(--ease-out-expo),
+      border-color 180ms var(--ease-out-expo),
+      color 180ms var(--ease-out-expo),
+      transform 160ms var(--ease-out-expo),
+      opacity 180ms var(--ease-out-expo),
+      box-shadow 180ms var(--ease-out-expo);
+  }
+
+  button:active:not(:disabled),
+  [role="button"]:active:not(:disabled) {
+    transform: scale(0.985);
+  }
+}
+
+@keyframes studioFadeUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes studioFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes studioAlertSlide {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes studioTabReveal {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-studio-page {
+  animation: studioFadeUp 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-studio-hero {
+  animation: studioFadeIn 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-studio-stagger-1 {
+  animation: studioFadeUp 340ms cubic-bezier(0.22, 1, 0.36, 1) 50ms both;
+}
+
+.animate-studio-stagger-2 {
+  animation: studioFadeUp 360ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both;
+}
+
+.animate-studio-alert {
+  animation: studioAlertSlide 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-studio-tab {
+  animation: studioTabReveal 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

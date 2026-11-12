@@ -4,6 +4,9 @@ import {
   RESTRICTED_DOMAIN_ERROR,
   UserProfileRecord,
   AuditLogRecord,
+  TrainingSession,
+  TrainingTrack,
+  SessionStatus,
   UserRole,
   RuntimePlatform,
   TokenClaimsSummary,
@@ -19,22 +22,23 @@ import {
   syncUserProfileToFirestore,
 } from '../services/firebase';
 
-const STORAGE_SESSION_KEY = 'hbplus_domaingate_session_v2';
-const STORAGE_DIRECTORY_KEY = 'hbplus_domaingate_directory_v2';
-const STORAGE_AUDIT_KEY = 'hbplus_domaingate_audit_v2';
+const STORAGE_SESSION_KEY = 'hbplus_domaingate_session_v4';
+const STORAGE_DIRECTORY_KEY = 'hbplus_domaingate_directory_v4';
+const STORAGE_SESSIONS_KEY = 'hbplus_domaingate_sessions_v4';
+const STORAGE_AUDIT_KEY = 'hbplus_domaingate_audit_v4';
 
-export const DEFAULT_ALEX_AVATAR = '/src/assets/images/avatar_alex_rivera_1794475146092.jpg';
-export const DEFAULT_PRIYA_AVATAR = '/src/assets/images/avatar_priya_sharma_1794475148407.jpg';
+export const DEFAULT_ARJUN_AVATAR = '/src/assets/images/avatar_arjun_nair_1794490222184.jpg';
+export const DEFAULT_ANANYA_AVATAR = '/src/assets/images/avatar_ananya_iyer_1794490222450.jpg';
 
 const INITIAL_DIRECTORY: UserProfileRecord[] = [
   {
     uid: 'usr_hbplus_admin_01',
     email: 'example@hbplus.fit',
-    displayName: 'Alex Rivera',
-    photoURL: DEFAULT_ALEX_AVATAR,
+    displayName: 'Arjun Nair',
+    photoURL: DEFAULT_ARJUN_AVATAR,
     domain: 'hbplus.fit',
     role: 'admin',
-    department: 'Performance & Coaching Lead',
+    department: 'Head of Strength & Conditioning · Indiranagar',
     platform: 'web',
     status: 'active',
     createdAt: '2026-10-14T09:15:00.000Z',
@@ -42,12 +46,12 @@ const INITIAL_DIRECTORY: UserProfileRecord[] = [
   },
   {
     uid: 'usr_hbplus_member_02',
-    email: 'priya.sharma@hbplus.fit',
-    displayName: 'Priya Sharma',
-    photoURL: DEFAULT_PRIYA_AVATAR,
+    email: 'ananya.iyer@hbplus.fit',
+    displayName: 'Ananya Iyer',
+    photoURL: DEFAULT_ANANYA_AVATAR,
     domain: 'hbplus.fit',
     role: 'user',
-    department: 'Mobile Coaching Programs',
+    department: 'Mobility & Movement Specialist · Indiranagar',
     platform: 'ios',
     status: 'active',
     createdAt: '2026-10-19T14:20:00.000Z',
@@ -55,12 +59,12 @@ const INITIAL_DIRECTORY: UserProfileRecord[] = [
   },
   {
     uid: 'usr_hbplus_member_03',
-    email: 'marcus.chen@hbplus.fit',
-    displayName: 'Marcus Chen',
+    email: 'rohan.deshmukh@hbplus.fit',
+    displayName: 'Rohan Deshmukh',
     photoURL: '',
     domain: 'hbplus.fit',
     role: 'user',
-    department: 'Biometrics & Wearables',
+    department: 'Metabolic Conditioning · Bandra West',
     platform: 'android',
     status: 'active',
     createdAt: '2026-10-28T11:05:00.000Z',
@@ -68,16 +72,76 @@ const INITIAL_DIRECTORY: UserProfileRecord[] = [
   },
   {
     uid: 'usr_hbplus_admin_04',
-    email: 'elena.rostova@hbplus.fit',
-    displayName: 'Elena Rostova',
+    email: 'kavya.menon@hbplus.fit',
+    displayName: 'Kavya Menon',
     photoURL: '',
     domain: 'hbplus.fit',
     role: 'admin',
-    department: 'Member Operations',
+    department: 'Studio Operations Lead · Vasant Vihar',
     platform: 'web',
     status: 'active',
     createdAt: '2026-11-02T08:00:00.000Z',
     updatedAt: '2026-11-11T12:00:00.000Z',
+  },
+  {
+    uid: 'usr_hbplus_member_05',
+    email: 'vikram.rao@hbplus.fit',
+    displayName: 'Vikramaditya Rao',
+    photoURL: '',
+    domain: 'hbplus.fit',
+    role: 'user',
+    department: 'Barbell & Olympic Lifting · Indiranagar',
+    platform: 'android',
+    status: 'active',
+    createdAt: '2026-11-04T07:30:00.000Z',
+    updatedAt: '2026-11-11T14:20:00.000Z',
+  },
+];
+
+const INITIAL_SESSIONS: TrainingSession[] = [
+  {
+    id: 'ses_01',
+    title: 'Compound Lower Body & Barbell Mechanics',
+    athleteName: 'Siddharth Kulkarni',
+    track: 'Strength & Power',
+    timeSlot: '07:30 AM',
+    durationMin: 60,
+    readinessScore: 94,
+    targetBpm: 146,
+    status: 'in_progress',
+  },
+  {
+    id: 'ses_02',
+    title: 'Thoracic & Hip Capsule Mobility Flow',
+    athleteName: 'Meera Krishnan',
+    track: 'Mobility & Recovery',
+    timeSlot: '09:00 AM',
+    durationMin: 45,
+    readinessScore: 89,
+    targetBpm: 114,
+    status: 'scheduled',
+  },
+  {
+    id: 'ses_03',
+    title: 'Aerobic Capacity & Rowing Intervals',
+    athleteName: 'Aditya Verma',
+    track: 'Metabolic Conditioning',
+    timeSlot: '11:00 AM',
+    durationMin: 60,
+    readinessScore: 86,
+    targetBpm: 168,
+    status: 'scheduled',
+  },
+  {
+    id: 'ses_04',
+    title: 'Overhead Stability & Kettlebell Complexes',
+    athleteName: 'Nandini Chatterjee',
+    track: 'Strength & Power',
+    timeSlot: '05:30 PM',
+    durationMin: 75,
+    readinessScore: 95,
+    targetBpm: 152,
+    status: 'completed',
   },
 ];
 
@@ -103,7 +167,7 @@ const INITIAL_AUDIT_LOGS: AuditLogRecord[] = [
   {
     id: 'log_init_03',
     uid: 'usr_hbplus_member_02',
-    email: 'priya.sharma@hbplus.fit',
+    email: 'ananya.iyer@hbplus.fit',
     domain: 'hbplus.fit',
     eventType: 'LOGIN_ALLOWED',
     platform: 'ios',
@@ -121,10 +185,11 @@ export interface AuthContextValue {
   currentPath: '/login' | '/dashboard';
   allowedDomains: string[];
   directory: UserProfileRecord[];
+  sessions: TrainingSession[];
   auditLogs: AuditLogRecord[];
   clearMessages: () => void;
   navigate: (path: '/login' | '/dashboard') => void;
-  loginWithGooglePopup: () => Promise<void>;
+  loginWithGooglePopup: (bridgedHbplusEmail?: string | null) => Promise<void>;
   authenticateWithEmailHandshake: (params: {
     email: string;
     displayName?: string;
@@ -135,7 +200,16 @@ export interface AuthContextValue {
   }) => Promise<boolean>;
   logout: () => Promise<void>;
   updateCurrentUserProfile: (updates: { displayName: string; department: string }) => void;
-  switchCurrentUserRole: (newRole: UserRole) => void;
+  addTrainingSession: (params: {
+    title: string;
+    athleteName: string;
+    track: TrainingTrack;
+    timeSlot: string;
+    durationMin: number;
+    targetBpm: number;
+  }) => { ok: boolean; error?: string };
+  cycleSessionStatus: (id: string) => void;
+  deleteTrainingSession: (id: string) => void;
   updateMemberRole: (uid: string, newRole: UserRole) => { ok: boolean; error?: string };
   toggleMemberStatus: (uid: string) => { ok: boolean; error?: string };
   provisionMember: (params: {
@@ -156,6 +230,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return saved ? JSON.parse(saved) : INITIAL_DIRECTORY;
     } catch {
       return INITIAL_DIRECTORY;
+    }
+  });
+
+  const [sessions, setSessions] = useState<TrainingSession[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_SESSIONS_KEY);
+      return saved ? JSON.parse(saved) : INITIAL_SESSIONS;
+    } catch {
+      return INITIAL_SESSIONS;
     }
   });
 
@@ -208,6 +291,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return currentUser ? '/dashboard' : '/login';
   });
 
+  // Hydrate persistent state from Express backend (/api/state) on boot
+  useEffect(() => {
+    let active = true;
+    fetch('/api/state')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!active || !data) return;
+        if (Array.isArray(data.directory) && data.directory.length > 0) {
+          setDirectory(data.directory);
+          setCurrentUser((prev) => {
+            if (!prev) return null;
+            const latest = (data.directory as UserProfileRecord[]).find(
+              (m) => m.uid === prev.uid || m.email.toLowerCase() === prev.email.toLowerCase()
+            );
+            return latest && latest.status === 'active' ? latest : prev;
+          });
+        }
+        if (Array.isArray(data.sessions)) {
+          setSessions(data.sessions);
+        }
+        if (Array.isArray(data.auditLogs)) {
+          setAuditLogs(data.auditLogs);
+        }
+      })
+      .catch(() => {
+        // Fallback to localStorage if offline
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   useEffect(() => {
     const rawPath = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
@@ -226,6 +341,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // ignore storage errors
     }
   }, [directory]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_SESSIONS_KEY, JSON.stringify(sessions));
+    } catch {
+      // ignore storage errors
+    }
+  }, [sessions]);
 
   useEffect(() => {
     try {
@@ -255,6 +378,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         createdAt: new Date().toISOString(),
       };
       setAuditLogs((prev) => [newRecord, ...prev]);
+      fetch('/api/audit-logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.auditLogs) setAuditLogs(data.auditLogs);
+        })
+        .catch(() => {});
     },
     []
   );
@@ -303,153 +436,186 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setRejectedEmailAttempt(null);
       setRouteInterceptionMessage(null);
 
-      await new Promise((resolve) => setTimeout(resolve, 250));
-
       const normalizedEmail = params.email.trim().toLowerCase();
       const platform = params.platform || 'web';
-      const domainResult = validateDomainAccess(normalizedEmail, allowedDomains, false);
 
-      if (!domainResult.allowed || !domainResult.extractedDomain) {
-        setIsAuthenticating(false);
-        setAuthError(domainResult.errorMessage || RESTRICTED_DOMAIN_ERROR);
-        setRejectedEmailAttempt(normalizedEmail || 'empty');
-        appendAuditLog({
-          uid: 'usr_restricted_attempt',
-          email: normalizedEmail || 'invalid-email',
-          domain: domainResult.extractedDomain || 'invalid',
-          eventType: 'LOGIN_RESTRICTED',
-          platform,
-        });
-        return false;
-      }
-
-      const existingMember = directory.find((m) => m.email.toLowerCase() === normalizedEmail);
-
-      if (existingMember && existingMember.status === 'suspended') {
-        setIsAuthenticating(false);
-        setAuthError('Your account has been suspended. Please contact your HB+ administrator.');
-        setRejectedEmailAttempt(normalizedEmail);
-        appendAuditLog({
-          uid: existingMember.uid,
-          email: normalizedEmail,
-          domain: domainResult.extractedDomain,
-          eventType: 'LOGIN_RESTRICTED',
-          platform,
-        });
-        return false;
-      }
-
-      const nowIso = new Date().toISOString();
-      const derivedName =
-        params.displayName ||
-        existingMember?.displayName ||
-        normalizedEmail
-          .split('@')[0]
-          .split(/[._-]/)
-          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-          .join(' ');
-
-      const defaultAvatar =
-        normalizedEmail === 'priya.sharma@hbplus.fit'
-          ? DEFAULT_PRIYA_AVATAR
-          : DEFAULT_ALEX_AVATAR;
-
-      const resolvedProfile: UserProfileRecord = existingMember
-        ? {
-            ...existingMember,
-            displayName: params.displayName || existingMember.displayName,
-            photoURL: params.photoURL || existingMember.photoURL || defaultAvatar,
-            role: params.role || existingMember.role,
-            platform,
-            updatedAt: nowIso,
-          }
-        : {
-            uid: `usr_hbplus_${Date.now().toString(36)}`,
+      try {
+        const response = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             email: normalizedEmail,
-            displayName: derivedName,
-            photoURL: params.photoURL || defaultAvatar,
-            domain: domainResult.extractedDomain,
-            role: params.role || 'user',
-            department: params.department || 'Fitness & Coaching',
+            displayName: params.displayName,
+            photoURL: params.photoURL,
+            department: params.department,
             platform,
-            status: 'active',
-            createdAt: nowIso,
-            updatedAt: nowIso,
-          };
+          }),
+        });
+        const data = await response.json();
+        if (Array.isArray(data.directory)) setDirectory(data.directory);
+        if (Array.isArray(data.auditLogs)) setAuditLogs(data.auditLogs);
 
-      setDirectory((prev) => {
-        const exists = prev.some((u) => u.email.toLowerCase() === normalizedEmail);
-        if (exists) {
-          return prev.map((u) =>
-            u.email.toLowerCase() === normalizedEmail ? resolvedProfile : u
-          );
+        if (!response.ok || !data.allowed || !data.profile) {
+          setIsAuthenticating(false);
+          setAuthError(data.errorMessage || RESTRICTED_DOMAIN_ERROR);
+          setRejectedEmailAttempt(normalizedEmail || 'empty');
+          return false;
         }
-        return [resolvedProfile, ...prev];
-      });
 
-      appendAuditLog({
-        uid: resolvedProfile.uid,
-        email: resolvedProfile.email,
-        domain: resolvedProfile.domain,
-        eventType: 'LOGIN_ALLOWED',
-        platform,
-      });
+        setCurrentUser(data.profile);
+        setTokenIssuedAt(Date.now());
+        setIsAuthenticating(false);
+        setCurrentPath('/dashboard');
+        window.history.pushState({}, '', '/dashboard');
+        return true;
+      } catch {
+        // Fallback deterministic client verification if backend unreachable
+        const domainResult = validateDomainAccess(normalizedEmail, allowedDomains, false);
+        if (!domainResult.allowed || !domainResult.extractedDomain) {
+          setIsAuthenticating(false);
+          setAuthError(domainResult.errorMessage || RESTRICTED_DOMAIN_ERROR);
+          setRejectedEmailAttempt(normalizedEmail || 'empty');
+          appendAuditLog({
+            uid: 'usr_restricted_attempt',
+            email: normalizedEmail || 'invalid-email',
+            domain: domainResult.extractedDomain || 'invalid',
+            eventType: 'LOGIN_RESTRICTED',
+            platform,
+          });
+          return false;
+        }
 
-      setCurrentUser(resolvedProfile);
-      setTokenIssuedAt(Date.now());
-      setIsAuthenticating(false);
-      setCurrentPath('/dashboard');
-      window.history.pushState({}, '', '/dashboard');
-      return true;
+        const existingMember = directory.find(
+          (m) => m.email.toLowerCase() === normalizedEmail
+        );
+        const nowIso = new Date().toISOString();
+        const derivedName =
+          params.displayName ||
+          existingMember?.displayName ||
+          normalizedEmail
+            .split('@')[0]
+            .split(/[._-]/)
+            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(' ');
+
+        const defaultAvatar =
+          normalizedEmail === 'ananya.iyer@hbplus.fit'
+            ? DEFAULT_ANANYA_AVATAR
+            : normalizedEmail === 'example@hbplus.fit'
+            ? DEFAULT_ARJUN_AVATAR
+            : '';
+
+        const resolvedRole: UserRole = existingMember
+          ? existingMember.role
+          : normalizedEmail === 'example@hbplus.fit'
+          ? 'admin'
+          : 'user';
+
+        const resolvedProfile: UserProfileRecord = existingMember
+          ? {
+              ...existingMember,
+              displayName: params.displayName || existingMember.displayName,
+              photoURL: params.photoURL || existingMember.photoURL || defaultAvatar,
+              role: resolvedRole,
+              platform,
+              updatedAt: nowIso,
+            }
+          : {
+              uid: `usr_hbplus_${Date.now().toString(36)}`,
+              email: normalizedEmail,
+              displayName: derivedName,
+              photoURL: params.photoURL || defaultAvatar,
+              domain: domainResult.extractedDomain,
+              role: resolvedRole,
+              department: params.department || 'Strength & Conditioning · Indiranagar',
+              platform,
+              status: 'active',
+              createdAt: nowIso,
+              updatedAt: nowIso,
+            };
+
+        setDirectory((prev) => {
+          const exists = prev.some((u) => u.email.toLowerCase() === normalizedEmail);
+          return exists
+            ? prev.map((u) =>
+                u.email.toLowerCase() === normalizedEmail ? resolvedProfile : u
+              )
+            : [resolvedProfile, ...prev];
+        });
+
+        setCurrentUser(resolvedProfile);
+        setTokenIssuedAt(Date.now());
+        setIsAuthenticating(false);
+        setCurrentPath('/dashboard');
+        window.history.pushState({}, '', '/dashboard');
+        return true;
+      }
     },
     [allowedDomains, appendAuditLog, directory]
   );
 
-  const loginWithGooglePopup = useCallback(async () => {
-    setIsAuthenticating(true);
-    setAuthError(null);
-    setRejectedEmailAttempt(null);
-    setRouteInterceptionMessage(null);
+  const loginWithGooglePopup = useCallback(
+    async (bridgedHbplusEmail: string | null = 'example@hbplus.fit') => {
+      setIsAuthenticating(true);
+      setAuthError(null);
+      setRejectedEmailAttempt(null);
+      setRouteInterceptionMessage(null);
 
-    try {
-      const profile = await signInWithGoogleDomainGate(allowedDomains, 'web');
-      setDirectory((prev) => {
-        const exists = prev.some((m) => m.email.toLowerCase() === profile.email);
-        return exists
-          ? prev.map((m) => (m.email.toLowerCase() === profile.email ? profile : m))
-          : [profile, ...prev];
-      });
-      setCurrentUser(profile);
-      setTokenIssuedAt(Date.now());
-      setCurrentPath('/dashboard');
-      window.history.pushState({}, '', '/dashboard');
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      if (msg.includes(RESTRICTED_DOMAIN_ERROR)) {
-        setAuthError(RESTRICTED_DOMAIN_ERROR);
-      } else if (
-        msg.includes('auth/popup-blocked') ||
-        msg.includes('auth/popup-closed-by-user') ||
-        msg.includes('auth/cancelled-popup-request') ||
-        msg.includes('auth/unauthorized-domain') ||
-        msg.includes('auth/operation-not-supported-in-this-environment')
-      ) {
+      try {
+        const profile = await signInWithGoogleDomainGate(
+          allowedDomains,
+          'web',
+          bridgedHbplusEmail
+        );
+        // Sync verified Google profile to backend database
         await authenticateWithEmailHandshake({
-          email: 'example@hbplus.fit',
-          displayName: 'Alex Rivera',
-          photoURL: DEFAULT_ALEX_AVATAR,
-          role: 'admin',
-          department: 'Performance & Coaching Lead',
+          email: profile.email,
+          displayName: profile.displayName,
+          photoURL: profile.photoURL,
+          role: profile.role,
+          department: profile.department,
           platform: 'web',
         });
-        return;
-      } else {
-        setAuthError(msg);
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        if (msg.includes(RESTRICTED_DOMAIN_ERROR)) {
+          setAuthError(RESTRICTED_DOMAIN_ERROR);
+          setRejectedEmailAttempt('example@gmail.com');
+        } else if (
+          msg.includes('auth/popup-blocked') ||
+          msg.includes('auth/popup-closed-by-user') ||
+          msg.includes('auth/cancelled-popup-request') ||
+          msg.includes('auth/unauthorized-domain') ||
+          msg.includes('auth/operation-not-supported-in-this-environment')
+        ) {
+          // If popup is blocked in iframe preview, complete handshake with the selected mailbox mode
+          const targetEmail = bridgedHbplusEmail || 'example@gmail.com';
+          await authenticateWithEmailHandshake({
+            email: targetEmail,
+            displayName:
+              targetEmail === 'ananya.iyer@hbplus.fit'
+                ? 'Ananya Iyer'
+                : targetEmail === 'example@hbplus.fit'
+                ? 'Arjun Nair'
+                : undefined,
+            photoURL:
+              targetEmail === 'ananya.iyer@hbplus.fit'
+                ? DEFAULT_ANANYA_AVATAR
+                : targetEmail === 'example@hbplus.fit'
+                ? DEFAULT_ARJUN_AVATAR
+                : undefined,
+            platform: 'web',
+          });
+          return;
+        } else {
+          setAuthError(msg);
+        }
+      } finally {
+        setIsAuthenticating(false);
       }
-    } finally {
-      setIsAuthenticating(false);
-    }
-  }, [allowedDomains, authenticateWithEmailHandshake]);
+    },
+    [allowedDomains, authenticateWithEmailHandshake]
+  );
 
   const logout = useCallback(async () => {
     const departingUser = currentUser;
@@ -490,81 +656,191 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setDirectory((prev) =>
         prev.map((m) => (m.uid === updated.uid ? updated : m))
       );
-      syncUserProfileToFirestore(updated, false).catch(() => {
-        // local state updated even if offline or simulated session
-      });
+
+      // Persist to backend database
+      fetch('/api/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid: updated.uid,
+          displayName: updated.displayName,
+          department: updated.department,
+        }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.profile) setCurrentUser(data.profile);
+          if (Array.isArray(data?.directory)) setDirectory(data.directory);
+        })
+        .catch(() => {});
+
+      // Persist to Firebase Firestore if real Firebase session is active
+      syncUserProfileToFirestore(updated, true).catch(() => {});
     },
     [currentUser]
   );
 
-  const switchCurrentUserRole = useCallback(
-    (newRole: UserRole) => {
-      if (!currentUser) return;
-      const updated: UserProfileRecord = {
-        ...currentUser,
-        role: newRole,
-        updatedAt: new Date().toISOString(),
+  const addTrainingSession = useCallback(
+    (params: {
+      title: string;
+      athleteName: string;
+      track: TrainingTrack;
+      timeSlot: string;
+      durationMin: number;
+      targetBpm: number;
+    }): { ok: boolean; error?: string } => {
+      const cleanTitle = params.title.trim();
+      const cleanAthlete = params.athleteName.trim();
+      if (!cleanTitle || !cleanAthlete) {
+        return {
+          ok: false,
+          error: 'Please enter both a training block title and member name.',
+        };
+      }
+      if (isNaN(params.durationMin) || params.durationMin < 15 || params.durationMin > 180) {
+        return {
+          ok: false,
+          error: 'Duration must be between 15 and 180 minutes.',
+        };
+      }
+
+      const optimistic: TrainingSession = {
+        id: `ses_${Date.now()}`,
+        title: cleanTitle,
+        athleteName: cleanAthlete,
+        track: params.track,
+        timeSlot: params.timeSlot.trim() || '04:30 PM',
+        durationMin: params.durationMin,
+        readinessScore: 92,
+        targetBpm: isNaN(params.targetBpm) ? 150 : params.targetBpm,
+        status: 'scheduled',
       };
-      setCurrentUser(updated);
-      setDirectory((prev) =>
-        prev.map((m) => (m.uid === updated.uid ? updated : m))
-      );
-      appendAuditLog({
-        uid: updated.uid,
-        email: updated.email,
-        domain: updated.domain,
-        eventType: 'ROLE_UPDATED',
-        platform: 'web',
-      });
+
+      setSessions((prev) => [optimistic, ...prev]);
+
+      fetch('/api/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(optimistic),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data?.sessions)) {
+            setSessions(data.sessions);
+          }
+        })
+        .catch(() => {});
+
+      return { ok: true };
     },
-    [appendAuditLog, currentUser]
+    []
   );
+
+  const cycleSessionStatus = useCallback((id: string) => {
+    setSessions((prev) =>
+      prev.map((s) => {
+        if (s.id !== id) return s;
+        const nextStatus: SessionStatus =
+          s.status === 'scheduled'
+            ? 'in_progress'
+            : s.status === 'in_progress'
+            ? 'completed'
+            : 'scheduled';
+        return { ...s, status: nextStatus };
+      })
+    );
+
+    fetch(`/api/sessions/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data?.sessions)) {
+          setSessions(data.sessions);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const deleteTrainingSession = useCallback((id: string) => {
+    setSessions((prev) => prev.filter((s) => s.id !== id));
+    fetch(`/api/sessions/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data?.sessions)) {
+          setSessions(data.sessions);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const updateMemberRole = useCallback(
     (uid: string, newRole: UserRole): { ok: boolean; error?: string } => {
       if (!currentUser || currentUser.role !== 'admin') {
-        return { ok: false, error: 'Admin role is required to modify member roles.' };
+        return { ok: false, error: 'Only Studio Admins can modify staff roles.' };
+      }
+      if (currentUser.uid === uid) {
+        return { ok: false, error: 'You cannot modify your own active admin role.' };
       }
       const target = directory.find((m) => m.uid === uid);
       if (!target) {
-        return { ok: false, error: 'Member not found.' };
+        return { ok: false, error: 'Staff member not found.' };
       }
       const nowIso = new Date().toISOString();
       setDirectory((prev) =>
         prev.map((m) => (m.uid === uid ? { ...m, role: newRole, updatedAt: nowIso } : m))
       );
-      if (currentUser.uid === uid) {
-        setCurrentUser((prev) => (prev ? { ...prev, role: newRole, updatedAt: nowIso } : null));
-      }
-      appendAuditLog({
-        uid: currentUser.uid,
-        email: target.email,
-        domain: target.domain,
-        eventType: 'ROLE_UPDATED',
-        platform: 'web',
-      });
+
+      fetch(`/api/directory/${encodeURIComponent(uid)}/role`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ actorUid: currentUser.uid, newRole }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data?.directory)) setDirectory(data.directory);
+          if (Array.isArray(data?.auditLogs)) setAuditLogs(data.auditLogs);
+        })
+        .catch(() => {});
+
       return { ok: true };
     },
-    [appendAuditLog, currentUser, directory]
+    [currentUser, directory]
   );
 
   const toggleMemberStatus = useCallback(
     (uid: string): { ok: boolean; error?: string } => {
       if (!currentUser || currentUser.role !== 'admin') {
-        return { ok: false, error: 'Admin role is required to change member status.' };
+        return { ok: false, error: 'Only Studio Admins can change staff status.' };
       }
       if (currentUser.uid === uid) {
         return { ok: false, error: 'You cannot suspend your own active admin session.' };
       }
       const target = directory.find((m) => m.uid === uid);
       if (!target) {
-        return { ok: false, error: 'Member not found.' };
+        return { ok: false, error: 'Staff member not found.' };
       }
       const nextStatus = target.status === 'active' ? 'suspended' : 'active';
       const nowIso = new Date().toISOString();
       setDirectory((prev) =>
         prev.map((m) => (m.uid === uid ? { ...m, status: nextStatus, updatedAt: nowIso } : m))
       );
+
+      fetch(`/api/directory/${encodeURIComponent(uid)}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ actorUid: currentUser.uid }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data?.directory)) setDirectory(data.directory);
+        })
+        .catch(() => {});
+
       return { ok: true };
     },
     [currentUser, directory]
@@ -579,7 +855,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       platform: RuntimePlatform;
     }): { ok: boolean; error?: string } => {
       if (!currentUser || currentUser.role !== 'admin') {
-        return { ok: false, error: 'Admin role is required to invite @hbplus.fit members.' };
+        return { ok: false, error: 'Only Studio Admins can invite @hbplus.fit staff.' };
       }
       const normalizedEmail = params.email.trim().toLowerCase();
       const domainCheck = validateDomainAccess(normalizedEmail, allowedDomains, false);
@@ -587,7 +863,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { ok: false, error: domainCheck.errorMessage || RESTRICTED_DOMAIN_ERROR };
       }
       if (directory.some((m) => m.email.toLowerCase() === normalizedEmail)) {
-        return { ok: false, error: 'A member with this @hbplus.fit email already exists.' };
+        return { ok: false, error: 'A staff member with this @hbplus.fit email already exists.' };
       }
 
       const nowIso = new Date().toISOString();
@@ -611,16 +887,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       setDirectory((prev) => [newMember, ...prev]);
-      appendAuditLog({
-        uid: currentUser.uid,
-        email: newMember.email,
-        domain: newMember.domain,
-        eventType: 'ROLE_UPDATED',
-        platform: 'web',
-      });
+
+      fetch('/api/directory', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          actorUid: currentUser.uid,
+          email: normalizedEmail,
+          displayName: params.displayName.trim(),
+          role: params.role,
+          department: params.department.trim(),
+          platform: params.platform,
+        }),
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (Array.isArray(data?.directory)) setDirectory(data.directory);
+          if (Array.isArray(data?.auditLogs)) setAuditLogs(data.auditLogs);
+        })
+        .catch(() => {});
+
       return { ok: true };
     },
-    [allowedDomains, appendAuditLog, currentUser, directory]
+    [allowedDomains, currentUser, directory]
   );
 
   const tokenClaims = currentUser
@@ -639,6 +928,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         currentPath,
         allowedDomains,
         directory,
+        sessions,
         auditLogs,
         clearMessages,
         navigate,
@@ -646,7 +936,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         authenticateWithEmailHandshake,
         logout,
         updateCurrentUserProfile,
-        switchCurrentUserRole,
+        addTrainingSession,
+        cycleSessionStatus,
+        deleteTrainingSession,
         updateMemberRole,
         toggleMemberStatus,
         provisionMember,

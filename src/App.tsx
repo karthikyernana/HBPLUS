@@ -12,7 +12,15 @@ const AppRouter: React.FC = () => {
   const { currentUser, currentPath } = useAuth();
   const isAuthorizedForDashboard = Boolean(currentUser && currentPath === '/dashboard');
 
-  return isAuthorizedForDashboard ? <DashboardScreen /> : <LoginScreen />;
+  return isAuthorizedForDashboard ? (
+    <div key="route-dashboard" className="animate-studio-page">
+      <DashboardScreen />
+    </div>
+  ) : (
+    <div key="route-login" className="animate-studio-page">
+      <LoginScreen />
+    </div>
+  );
 };
 
 export default function App() {

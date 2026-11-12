@@ -1,0 +1,264 @@
+{
+  "version": 4,
+  "directory": [
+    {
+      "uid": "usr_hbplus_admin_01",
+      "email": "example@hbplus.fit",
+      "displayName": "Arjun Nair",
+      "photoURL": "/src/assets/images/avatar_arjun_nair_1794490222184.jpg",
+      "domain": "hbplus.fit",
+      "role": "admin",
+      "department": "Head of Strength & Conditioning · Indiranagar",
+      "platform": "web",
+      "status": "active",
+      "createdAt": "2026-10-14T09:15:00.000Z",
+      "updatedAt": "2026-11-12T13:57:40.715Z"
+    },
+    {
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "displayName": "Ananya Iyer",
+      "photoURL": "/src/assets/images/avatar_ananya_iyer_1794490222450.jpg",
+      "domain": "hbplus.fit",
+      "role": "user",
+      "department": "Mobility & Movement Specialist · Indiranagar",
+      "platform": "web",
+      "status": "active",
+      "createdAt": "2026-10-19T14:20:00.000Z",
+      "updatedAt": "2026-11-12T13:57:37.065Z"
+    },
+    {
+      "uid": "usr_hbplus_member_03",
+      "email": "rohan.deshmukh@hbplus.fit",
+      "displayName": "Rohan Deshmukh",
+      "photoURL": "",
+      "domain": "hbplus.fit",
+      "role": "user",
+      "department": "Metabolic Conditioning · Bandra West",
+      "platform": "android",
+      "status": "active",
+      "createdAt": "2026-10-28T11:05:00.000Z",
+      "updatedAt": "2026-11-10T21:10:00.000Z"
+    },
+    {
+      "uid": "usr_hbplus_admin_04",
+      "email": "kavya.menon@hbplus.fit",
+      "displayName": "Kavya Menon",
+      "photoURL": "",
+      "domain": "hbplus.fit",
+      "role": "admin",
+      "department": "Studio Operations Lead · Vasant Vihar",
+      "platform": "web",
+      "status": "active",
+      "createdAt": "2026-11-02T08:00:00.000Z",
+      "updatedAt": "2026-11-11T12:00:00.000Z"
+    },
+    {
+      "uid": "usr_hbplus_member_05",
+      "email": "vikram.rao@hbplus.fit",
+      "displayName": "Vikramaditya Rao",
+      "photoURL": "",
+      "domain": "hbplus.fit",
+      "role": "user",
+      "department": "Barbell & Olympic Lifting · Indiranagar",
+      "platform": "android",
+      "status": "active",
+      "createdAt": "2026-11-04T07:30:00.000Z",
+      "updatedAt": "2026-11-11T14:20:00.000Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "ses_1794491862256",
+      "title": "Posterior Chain & Trap Bar Deadlift",
+      "athleteName": "Pranav Subramanian",
+      "track": "Strength & Power",
+      "timeSlot": "06:30 PM",
+      "durationMin": 60,
+      "readinessScore": 92,
+      "targetBpm": 148,
+      "status": "scheduled"
+    },
+    {
+      "id": "ses_01",
+      "title": "Compound Lower Body & Barbell Mechanics",
+      "athleteName": "Siddharth Kulkarni",
+      "track": "Strength & Power",
+      "timeSlot": "07:30 AM",
+      "durationMin": 60,
+      "readinessScore": 94,
+      "targetBpm": 146,
+      "status": "in_progress"
+    },
+    {
+      "id": "ses_02",
+      "title": "Thoracic & Hip Capsule Mobility Flow",
+      "athleteName": "Meera Krishnan",
+      "track": "Mobility & Recovery",
+      "timeSlot": "09:00 AM",
+      "durationMin": 45,
+      "readinessScore": 89,
+      "targetBpm": 114,
+      "status": "scheduled"
+    },
+    {
+      "id": "ses_03",
+      "title": "Aerobic Capacity & Rowing Intervals",
+      "athleteName": "Aditya Verma",
+      "track": "Metabolic Conditioning",
+      "timeSlot": "11:00 AM",
+      "durationMin": 60,
+      "readinessScore": 86,
+      "targetBpm": 168,
+      "status": "scheduled"
+    },
+    {
+      "id": "ses_04",
+      "title": "Overhead Stability & Kettlebell Complexes",
+      "athleteName": "Nandini Chatterjee",
+      "track": "Strength & Power",
+      "timeSlot": "05:30 PM",
+      "durationMin": 75,
+      "readinessScore": 95,
+      "targetBpm": 152,
+      "status": "completed"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "log_1794491860716_qusw",
+      "uid": "usr_hbplus_admin_01",
+      "email": "example@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:57:40.715Z"
+    },
+    {
+      "id": "log_1794491860114_6ap9",
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGOUT",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:57:40.114Z"
+    },
+    {
+      "id": "log_1794491857065_4b0f",
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:57:37.065Z"
+    },
+    {
+      "id": "log_1794491856446_h269",
+      "uid": "usr_restricted_attempt",
+      "email": "example@gmail.com",
+      "domain": "gmail.com",
+      "eventType": "LOGIN_RESTRICTED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:57:36.446Z"
+    },
+    {
+      "id": "log_1794491711748_0tj2",
+      "uid": "usr_hbplus_admin_01",
+      "email": "example@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:55:11.748Z"
+    },
+    {
+      "id": "log_1794491711157_nmlp",
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGOUT",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:55:11.157Z"
+    },
+    {
+      "id": "log_1794491708839_787c",
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:55:08.839Z"
+    },
+    {
+      "id": "log_1794491708304_4njz",
+      "uid": "usr_restricted_attempt",
+      "email": "example@gmail.com",
+      "domain": "gmail.com",
+      "eventType": "LOGIN_RESTRICTED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:55:08.304Z"
+    },
+    {
+      "id": "log_1794491530618_bapj",
+      "uid": "usr_hbplus_admin_01",
+      "email": "example@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:52:10.618Z"
+    },
+    {
+      "id": "log_1794491529987_kz5j",
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGOUT",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:52:09.987Z"
+    },
+    {
+      "id": "log_1794491526177_30th",
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:52:06.177Z"
+    },
+    {
+      "id": "log_1794491524392_xgoo",
+      "uid": "usr_restricted_attempt",
+      "email": "example@gmail.com",
+      "domain": "gmail.com",
+      "eventType": "LOGIN_RESTRICTED",
+      "platform": "web",
+      "createdAt": "2026-11-12T13:52:04.392Z"
+    },
+    {
+      "id": "log_init_01",
+      "uid": "usr_hbplus_admin_01",
+      "email": "example@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "web",
+      "createdAt": "2026-11-11T22:14:10.000Z"
+    },
+    {
+      "id": "log_init_02",
+      "uid": "usr_unverified_ext",
+      "email": "example@gmail.com",
+      "domain": "gmail.com",
+      "eventType": "LOGIN_RESTRICTED",
+      "platform": "android",
+      "createdAt": "2026-11-11T22:41:05.000Z"
+    },
+    {
+      "id": "log_init_03",
+      "uid": "usr_hbplus_member_02",
+      "email": "ananya.iyer@hbplus.fit",
+      "domain": "hbplus.fit",
+      "eventType": "LOGIN_ALLOWED",
+      "platform": "ios",
+      "createdAt": "2026-11-11T23:05:44.000Z"
+    }
+  ]
+}
