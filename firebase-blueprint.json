@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated user profile with Google account avatar, display name, verified email domain, and role-based access control metadata.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID matching the document ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified official domain email address fetched from Google account.",
+          "minLength": 5,
+          "maxLength": 254,
+          "pattern": "^[^@\\s]+@hbplus\\.fit$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Full display name fetched from Google account.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Avatar image URL fetched from Google account.",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        "domain": {
+          "type": "string",
+          "description": "Extracted lowercase email domain.",
+          "minLength": 3,
+          "maxLength": 100,
+          "enum": ["hbplus.fit"]
+        },
+        "role": {
+          "type": "string",
+          "description": "Assigned RBAC role for protected routes and actions.",
+          "enum": ["user", "admin"]
+        },
+        "department": {
+          "type": "string",
+          "description": "Organization department within HB+.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "platform": {
+          "type": "string",
+          "description": "Client runtime platform used during authentication.",
+          "enum": ["web", "ios", "android"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Account lifecycle status.",
+          "enum": ["active", "suspended"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the user profile was first created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the user profile was last updated."
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "displayName",
+        "photoURL",
+        "domain",
+        "role",
+        "department",
+        "platform",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security audit log entry recording authentication and domain verification events.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "UID of the user who triggered the audit event.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address evaluated by the domain gate.",
+          "minLength": 5,
+          "maxLength": 254
+        },
+        "domain": {
+          "type": "string",
+          "description": "Email domain evaluated during handshake.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "eventType": {
+          "type": "string",
+          "description": "Type of security event recorded.",
+          "enum": ["LOGIN_ALLOWED", "LOGIN_RESTRICTED", "LOGOUT", "ROLE_UPDATED"]
+        },
+        "platform": {
+          "type": "string",
+          "description": "Runtime platform where event occurred.",
+          "enum": ["web", "ios", "android"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the audit event."
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "domain",
+        "eventType",
+        "platform",
+        "createdAt"
+      ]
+    },
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted admin lookup record for RBAC verification.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "UID of the administrator.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "grantedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when admin privilege was granted."
+        }
+      },
+      "required": ["uid", "grantedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores verified @hbplus.fit user profiles with Google avatar, displayName, email, and RBAC."
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Stores immutable authentication and domain verification audit logs."
+    },
+    "/admins/{adminUid}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Trusted administrator registry for Zero-Trust RBAC lookups."
+    }
+  }
+}

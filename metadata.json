@@ -1,0 +1,6 @@
+{
+  "name": "HB+ DomainGate Auth",
+  "description": "Cross-platform React Native & Web enterprise authentication gateway with Google OAuth 2.0, strict @hbplus.fit email domain enforcement, role-based access control, and Firebase persistence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
